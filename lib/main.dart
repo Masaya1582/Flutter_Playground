@@ -31,6 +31,26 @@ class _QuizScreenState extends State<QuizScreen> {
       options: ['1', '3', '4', '5'],
       correctOption: '4',
     ),
+    Question(
+      questionText: 'What is the largest planet in our solar system?',
+      options: ['Earth', 'Mars', 'Jupiter', 'Saturn'],
+      correctOption: 'Jupiter',
+    ),
+    Question(
+      questionText: 'Who painted the Mona Lisa?',
+      options: [
+        'Leonardo da Vinci',
+        'Vincent van Gogh',
+        'Pablo Picasso',
+        'Claude Monet'
+      ],
+      correctOption: 'Leonardo da Vinci',
+    ),
+    Question(
+      questionText: 'What is the chemical symbol for water?',
+      options: ['W', 'HO', 'H2O', 'O2'],
+      correctOption: 'H2O',
+    ),
     // Add more questions here...
   ];
 
@@ -88,13 +108,26 @@ class _QuizScreenState extends State<QuizScreen> {
           children: [
             Text(
               _questions[_currentQuestionIndex].questionText,
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(fontSize: 32.0),
             ),
             SizedBox(height: 16.0),
             ..._questions[_currentQuestionIndex].options.map((option) {
-              return ElevatedButton(
-                onPressed: () => _checkAnswer(option),
-                child: Text(option),
+              return Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _checkAnswer(option),
+                    child: Text(
+                      option,
+                      style: TextStyle(
+                          fontSize: 24.0), // Set the desired font size here
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 80.0),
+                    ),
+                  ),
+                  SizedBox(
+                      height: 8.0), // Add the desired spacing between buttons
+                ],
               );
             }),
           ],
