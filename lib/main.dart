@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'question.dart';
+
 void main() => runApp(SimpleQuizApp());
 
 class SimpleQuizApp extends StatelessWidget {
@@ -135,15 +137,4 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
     );
   }
-}
-
-class Question {
-  final String questionText;
-  final List<String> options;
-  final String correctOption;
-
-  Question(
-      {required this.questionText,
-      required this.options,
-      required this.correctOption});
 }
