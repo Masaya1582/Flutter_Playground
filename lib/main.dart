@@ -1,9 +1,31 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:timezone/timezone.dart' as tz; // Import the tz package
 
 void main() {
   runApp(ReminderApp());
+  initializeNotifications();
+}
+
+void initializeNotifications() {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  // Define initialization settings for Android and iOS
+  var initializationSettingsAndroid = AndroidInitializationSettings(
+      'app_icon'); // Replace 'app_icon' with your app's launcher icon name
+  var initializationSettingsIOS = IOSInitializationSettings();
+  var initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  // Initialize the plugin with the settings
+  flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
 }
 
 class ReminderApp extends StatelessWidget {
@@ -35,6 +57,38 @@ class _ReminderListScreenState extends State<ReminderListScreen> {
     setState(() {
       reminders.add(reminder);
     });
+    scheduleLocalNotification(reminder.title, reminder.dateTime);
+  }
+
+  void scheduleLocalNotification(String title, DateTime dateTime) async {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+
+    // Define notification details
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'channel_id', // Replace with your desired channel ID
+      'channel_name', // Replace with your desired channel name
+      'channel_description', // Replace with your desired channel description
+      importance: Importance.high,
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    // Schedule the notification
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0, // Unique notification ID, you can use different IDs for different reminders
+      title,
+      'Reminder', // Notification body
+      tz.TZDateTime.from(dateTime,
+          tz.local), // Schedule date and time in the device's local timezone
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 
   @override
