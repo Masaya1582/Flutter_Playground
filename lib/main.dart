@@ -1,32 +1,47 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ActivityIndicatorApp());
 }
 
-class MyApp extends StatelessWidget {
+class ActivityIndicatorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'Activity Indicator App',
+      home: ActivityIndicatorScreen(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class ActivityIndicatorScreen extends StatefulWidget {
+  @override
+  _ActivityIndicatorScreenState createState() =>
+      _ActivityIndicatorScreenState();
+}
 
-  final String title;
+class _ActivityIndicatorScreenState extends State<ActivityIndicatorScreen> {
+  bool _showActivityIndicator = false;
+
+  void _toggleActivityIndicator() {
+    setState(() {
+      _showActivityIndicator = !_showActivityIndicator;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Activity Indicator App'),
       ),
       body: Center(
-        child: Text('Hello World'),
+        child: _showActivityIndicator
+            ? CircularProgressIndicator()
+            : ElevatedButton(
+                onPressed: _toggleActivityIndicator,
+                child: Text('Show Activity Indicator'),
+              ),
       ),
     );
   }
