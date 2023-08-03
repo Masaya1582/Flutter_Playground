@@ -1,32 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(CollectionViewApp());
 }
 
-class MyApp extends StatelessWidget {
+class CollectionViewApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'CollectionView App',
+      home: CollectionViewScreen(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class CollectionViewScreen extends StatelessWidget {
+  final List<String> items = List.generate(100, (index) => 'Item $index');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Collection View App'),
       ),
-      body: Center(
-        child: Text('Hello World'),
+      body: StaggeredGridView.countBuilder(
+        crossAxisCount: 3, // Number of columns
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: Center(
+              child: Text(items[index]),
+            ),
+          );
+        },
+        staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 4.0,
       ),
     );
   }
