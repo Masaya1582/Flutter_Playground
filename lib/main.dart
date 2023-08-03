@@ -1,10 +1,3 @@
-//
-//  main.dart
-//  Flutter_Playground
-//
-//  Created by Masaya Nakakuki on 2023/08/03.
-//  All rights reserved.
-
 import 'package:flutter/material.dart';
 
 void main() {
