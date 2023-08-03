@@ -1,4 +1,4 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -24,17 +24,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  AudioPlayer audioPlayer = AudioPlayer();
+  AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
 
-  void playLocalAudio() async {
-    int result = await audioPlayer.play('assets/audio/sample_sound.mp3');
-    if (result == 1) {
-      // success
+  void playLocalAudio() {
+    audioPlayer.open(Audio('assets/audio/sample_sound.mp3')).then((_) {
+      // Audio played successfully
       print('Audio played successfully');
-    } else {
-      // error
-      print('Error playing audio');
-    }
+    }).catchError((error) {
+      // Error playing audio
+      print('Error playing audio: $error');
+    });
   }
 
   @override
