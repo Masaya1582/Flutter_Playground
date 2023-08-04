@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,25 +9,56 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'Calendar View Example',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: CalendarView(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class CalendarView extends StatefulWidget {
+  @override
+  _CalendarViewState createState() => _CalendarViewState();
+}
 
-  final String title;
+class _CalendarViewState extends State<CalendarView> {
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Calendar View'),
       ),
       body: Center(
-        child: Text('Hello World'),
+        child: TableCalendar(
+          calendarFormat: _calendarFormat,
+          focusedDay: _focusedDay,
+          firstDay: DateTime.utc(2021, 1, 1),
+          lastDay: DateTime.utc(2030, 12, 31),
+          selectedDayPredicate: (day) {
+            // Use this predicate to determine if a day is selected
+            return isSameDay(_selectedDay, day);
+          },
+          onFormatChanged: (format) {
+            setState(() {
+              _calendarFormat = format;
+            });
+          },
+          onPageChanged: (focusedDay) {
+            _focusedDay = focusedDay;
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(() {
+              _selectedDay = selectedDay;
+              _focusedDay = focusedDay;
+            });
+          },
+        ),
       ),
     );
   }
