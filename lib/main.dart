@@ -4,85 +4,75 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(DiceApp());
+  runApp(MyApp());
 }
 
-class DiceApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dice App',
-      home: DiceScreen(),
+      home: Scaffold(
+        body: ContentView(),
+      ),
     );
   }
 }
 
-class DiceScreen extends StatefulWidget {
+class ContentView extends StatefulWidget {
   @override
-  _DiceScreenState createState() => _DiceScreenState();
+  _ContentViewState createState() => _ContentViewState();
 }
 
-class _DiceScreenState extends State<DiceScreen> {
-  int _diceValue = 1;
-  bool _isRolling = false;
-  Timer? _timer;
-
-  void _rollDice() {
-    if (_isRolling) {
-      _timer?.cancel();
-      _isRolling = false;
-      setState(() {
-        // Set the button text and background color back to the initial state.
-      });
-    } else {
-      _isRolling = true;
-      _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
-        setState(() {
-          _diceValue = Random().nextInt(6) + 1;
-        });
-      });
-      setState(() {
-        // Change the button text and background color while rolling.
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+class _ContentViewState extends State<ContentView> {
+  int randomNumber = 1;
+  Timer? timer;
+  bool isRolling = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dice App'),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Spacer(),
             Image.asset(
-              'assets/images/dice$_diceValue.png',
-              height: 150,
-              width: 150,
+              'assets/images/dice$randomNumber.png', // Make sure to add images named "die_face_1.png", "die_face_2.png", etc. to the "assets" folder of your project.
+              width: MediaQuery.of(context).size.width / 2,
             ),
-            SizedBox(height: 30),
+            Spacer(),
             ElevatedButton(
-              onPressed: _rollDice,
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                primary: _isRolling ? Colors.red : Colors.blue,
-              ),
-              child: Text(
-                _isRolling ? 'Stop Dice' : 'Play Dice',
-                style: TextStyle(fontSize: 20),
-              ),
+              onPressed: isRolling ? null : playDice,
+              child: Text("サイコロを振る"),
             ),
+            Spacer(),
           ],
         ),
       ),
     );
+  }
+
+  void playDice() {
+    print("ボタンが押されたよ");
+    setState(() {
+      isRolling = true;
+    });
+    timer = Timer.periodic(Duration(milliseconds: 100), (_) {
+      setState(() {
+        randomNumber = Random().nextInt(6) + 1;
+      });
+    });
+    Future.delayed(Duration(milliseconds: 500), () {
+      timer?.cancel();
+      setState(() {
+        isRolling = false;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 }
