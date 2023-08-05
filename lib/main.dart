@@ -8,26 +8,92 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      home: MyTabView(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyTabView extends StatefulWidget {
+  @override
+  _MyTabViewState createState() => _MyTabViewState();
+}
 
-  final String title;
+class _MyTabViewState extends State<MyTabView>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Tab View Demo'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: 'Home'),
+            Tab(text: 'Posts'),
+            Tab(text: 'Notifications'),
+            Tab(text: 'Settings'),
+          ],
+        ),
       ),
-      body: Center(
-        child: Text('Hello World'),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          HomeTab(),
+          PostsTab(),
+          NotificationsTab(),
+          SettingsTab(),
+        ],
       ),
+    );
+  }
+}
+
+class HomeTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Home Tab Content'),
+    );
+  }
+}
+
+class PostsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Posts Tab Content'),
+    );
+  }
+}
+
+class NotificationsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Notifications Tab Content'),
+    );
+  }
+}
+
+class SettingsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Settings Tab Content'),
     );
   }
 }
