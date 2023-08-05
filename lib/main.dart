@@ -8,26 +8,43 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Slider Demo'),
+        ),
+        body: Center(
+          child: SliderWidget(),
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class SliderWidget extends StatefulWidget {
+  @override
+  _SliderWidgetState createState() => _SliderWidgetState();
+}
 
-  final String title;
+class _SliderWidgetState extends State<SliderWidget> {
+  double _sliderValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text('Hello World'),
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Slider(
+          value: _sliderValue,
+          onChanged: (newValue) {
+            setState(() {
+              _sliderValue = newValue;
+            });
+          },
+          min: 0.0,
+          max: 100.0,
+        ),
+        Text("Slider Value: ${_sliderValue.toStringAsFixed(2)}"),
+      ],
     );
   }
 }
