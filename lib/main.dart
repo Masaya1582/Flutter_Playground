@@ -1,32 +1,72 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String jokeSetup = '';
+  String jokePunchline = '';
+
+  Future<void> fetchRandomJoke() async {
+    final response = await http
+        .get(Uri.parse('https://official-joke-api.appspot.com/random_joke'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> decodedResponse = json.decode(response.body);
+      setState(() {
+        jokeSetup = decodedResponse['setup'];
+        jokePunchline = decodedResponse['punchline'];
+      });
+    } else {
+      // Handle error
+      print('Failed to load joke');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchRandomJoke();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text('Hello World'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Random Joke'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Setup: $jokeSetup',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Punchline: $jokePunchline',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+              ElevatedButton(
+                onPressed: fetchRandomJoke,
+                child: Text('Get Another Joke'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
