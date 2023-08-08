@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,25 +9,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'Animated Text App',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: AnimatedTextScreen(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
+class AnimatedTextScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(title: Text('Animated Text Example')),
       body: Center(
-        child: Text('Hello World'),
+        child: TyperAnimatedTextKit(
+          text: ['Hello, Flutter!', 'Welcome to Animated Text'],
+          textStyle: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
