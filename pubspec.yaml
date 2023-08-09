@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  wtf_rotary_dial: ^0.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
