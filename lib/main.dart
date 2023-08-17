@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -8,25 +10,73 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'Expand Operator Demo',
+      home: CategoriesPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class CategoriesPage extends StatefulWidget {
+  @override
+  _CategoriesPageState createState() => _CategoriesPageState();
+}
 
-  final String title;
+class _CategoriesPageState extends State<CategoriesPage> {
+  final _categoriesStreamController = StreamController<List<String>>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    final categories = [
+      'Fruits',
+      'Vegetables',
+      'Snacks',
+    ];
+
+    _categoriesStreamController.sink.add(categories);
+  }
+
+  @override
+  void dispose() {
+    _categoriesStreamController.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Categories'),
       ),
-      body: Center(
-        child: Text('Hello World'),
+      body: StreamBuilder<List<String>>(
+        stream: _categoriesStreamController.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final categories = snapshot.data!;
+            final expandedItems = categories.expand((category) {
+              return [
+                ListTile(
+                  title: Text(category,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                Divider(),
+                ListTile(
+                  title: Text('Item 1'),
+                ),
+                ListTile(
+                  title: Text('Item 2'),
+                ),
+              ];
+            });
+
+            return ListView(
+              children: List<Widget>.from(expandedItems),
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
