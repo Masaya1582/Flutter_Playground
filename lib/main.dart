@@ -1,7 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  final numbersStream = Stream.fromIterable([1, 2, 3, 4, 5]);
+
+  final transformedStream = numbersStream.map((number) => number * 2);
+
+  final filteredStream = transformedStream.where((number) => number > 5);
+
+  filteredStream.listen((number) {
+    print('Received number: $number');
+  });
 }
 
 class MyApp extends StatelessWidget {
