@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  print("Welcome to the Weather App!");
+
+  fetchWeather().then((weather) {
+    print("Today's weather: $weather");
+  });
+
+  print("Fetching weather information...");
+}
+
+Future<String> fetchWeather() {
+  return Future.delayed(Duration(seconds: 2), () {
+    return "Sunny";
+  });
 }
 
 class MyApp extends StatelessWidget {
