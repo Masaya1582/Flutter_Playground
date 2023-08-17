@@ -1,4 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+class User {
+  final String id;
+  final String name;
+
+  User(this.id, this.name);
+}
+
+Future<User> fetchUserDataFromSourceA() async {
+  await Future.delayed(Duration(seconds: 2)); // Simulate fetching data
+  return User('123', 'Alice');
+}
+
+Future<User> fetchUserDataFromSourceB() async {
+  await Future.delayed(Duration(seconds: 3)); // Simulate fetching data
+  return User('456', 'Bob');
+}
+
+Stream<User> combineFuturesToStream(
+    Future<User> futureA, Future<User> futureB) async* {
+  final userA = await futureA;
+  yield userA;
+
+  final userB = await futureB;
+  yield userB;
+}
 
 void main() {
   runApp(MyApp());
@@ -8,25 +36,54 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'Combine Futures and Streams Demo',
+      home: UserDisplayPage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class UserDisplayPage extends StatefulWidget {
+  @override
+  _UserDisplayPageState createState() => _UserDisplayPageState();
+}
 
-  final String title;
+class _UserDisplayPageState extends State<UserDisplayPage> {
+  final Stream<User> _combinedStream = combineFuturesToStream(
+    fetchUserDataFromSourceA(),
+    fetchUserDataFromSourceB(),
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('User Display'),
       ),
       body: Center(
-        child: Text('Hello World'),
+        child: StreamBuilder<User>(
+          stream: _combinedStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasData) {
+              final user = snapshot.data!;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('User ID: ${user.id}',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text('User Name: ${user.name}',
+                      style: TextStyle(fontSize: 18)),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error fetching user data');
+            } else {
+              return Text('No user data available');
+            }
+          },
+        ),
       ),
     );
   }
