@@ -1,36 +1,78 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  runApp(MyApp());
+  runApp(RouletteApp());
 }
 
-class MyApp extends StatelessWidget {
+class RouletteApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      title: 'Roulette App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: RouletteScreen(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class RouletteScreen extends StatefulWidget {
+  @override
+  _RouletteScreenState createState() => _RouletteScreenState();
+}
 
-  final String title;
+class _RouletteScreenState extends State<RouletteScreen> {
+  final List<String> colors = ['Red', 'Black', 'Green'];
+  Random random = Random();
+  String resultColor = '';
+  bool spinning = false;
+
+  void spinRouletteWheel() {
+    setState(() {
+      spinning = true;
+      resultColor = '';
+    });
+
+    Future.delayed(Duration(seconds: 2), () {
+      int randomNumber = random.nextInt(37);
+      resultColor = randomNumber == 0
+          ? 'Green'
+          : randomNumber % 2 == 0
+              ? 'Black'
+              : 'Red';
+
+      setState(() {
+        spinning = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Simple Roulette'),
       ),
       body: Center(
-        child: Text('Hello World'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            spinning
+                ? CircularProgressIndicator()
+                : Text(
+                    'Result Color: $resultColor',
+                    style: TextStyle(fontSize: 24),
+                  ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: spinning ? null : spinRouletteWheel,
+              child: Text('Spin the Wheel'),
+            ),
+          ],
+        ),
       ),
     );
   }
