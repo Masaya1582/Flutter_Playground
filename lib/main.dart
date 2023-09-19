@@ -1,36 +1,43 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+    return CupertinoApp(
+      home: HomeView(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
+class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text("iOS-style Form"),
       ),
-      body: Center(
-        child: Text('Hello World'),
+      child: SafeArea(
+        child: CupertinoFormSection(
+          header: Text("Personal Information"),
+          children: [
+            CupertinoFormRow(
+              prefix: Text("First Name"),
+              child: CupertinoTextFormFieldRow(
+                placeholder: "Enter your first name",
+              ),
+            ),
+            CupertinoFormRow(
+              prefix: Text("Last Name"),
+              child: CupertinoTextFormFieldRow(
+                placeholder: "Enter your last name",
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
