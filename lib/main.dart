@@ -1,36 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  runApp(MyApp());
+  runApp(HalfModalViewApp());
 }
 
-class MyApp extends StatelessWidget {
+class HalfModalViewApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Half Modal View Example"),
+        ),
+        body: ContentView(),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class ContentView extends StatelessWidget {
+  final PanelController panelController = PanelController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
+    return SlidingUpPanel(
+      controller: panelController,
+      minHeight: 50, // Height of the collapsed panel
+      maxHeight: 300, // Height of the expanded panel
+      panel: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              "This is the half modal view content.",
+              style: TextStyle(fontSize: 20.0),
+            ),
+            // Add additional widgets for your half modal content
+          ],
+        ),
       ),
       body: Center(
-        child: Text('Hello World'),
+        child: ElevatedButton(
+          onPressed: () {
+            if (panelController.isPanelOpen) {
+              panelController.close();
+            } else {
+              panelController.open();
+            }
+          },
+          child: Text("Toggle Half Modal"),
+        ),
       ),
     );
   }
