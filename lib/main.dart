@@ -1,36 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  runApp(MyApp());
+  runApp(ChevronAnimationApp());
 }
 
-class MyApp extends StatelessWidget {
+class ChevronAnimationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Hello World'),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Chevron Animation Example"),
+        ),
+        body: ContentView(),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class ContentView extends StatefulWidget {
+  @override
+  _ContentViewState createState() => _ContentViewState();
+}
 
-  final String title;
+class _ContentViewState extends State<ContentView> {
+  bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        child: Text('Hello World'),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "Chevron Animation Example",
+            style: TextStyle(fontSize: 24.0),
+          ),
+          SizedBox(height: 20.0),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                isExpanded = !isExpanded;
+              });
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(isExpanded ? "Hide Text" : "Show Text"),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                ),
+              ],
+            ),
+          ),
+          AnimatedContainer(
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            height: isExpanded ? 150.0 : 0,
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "This is the hidden text that you can show or hide using the Chevron button.",
+                style: TextStyle(fontSize: 16.0),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
